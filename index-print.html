@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>월급술사 온보딩 — Print</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/static/woff2/SUIT.css"/>
+<link rel="stylesheet" href="tokens.css"/>
+<style>
+  :root{
+    --primary:#5F79FF; --primary-soft:#BFC9FF; --teal:#5DD3C9; --lime:#C4E427;
+    --bg:#FFFFFF; --ink:#000000; --muted:#545454; --muted-2:#757575;
+    --line:#E4E4E4; --line-2:#D8D8D8; --chip:#353535; --soft:#F1F1F1;
+    --bg-tinted:#EDEFF7; --sheet:#FFFFFF;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;font-family:"SUIT",-apple-system,BlinkMacSystemFont,"Pretendard",system-ui,sans-serif;color:var(--ink);letter-spacing:-0.025em;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:default;padding:0}
+  /* disable animations for print */
+  *,*::before,*::after{animation:none !important;transition:none !important}
+
+  /* page grid */
+  .page{
+    width:100%;
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    justify-content:center;
+    gap:32px;
+    padding:14px 8px 20px;
+    break-after:page;
+    page-break-after:always;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .page:last-child{break-after:auto;page-break-after:auto}
+  .cell{
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  .label{
+    font-size:11px;font-weight:700;letter-spacing:.04em;color:#333;
+    text-align:center;line-height:1.3;max-width:380px;
+  }
+  .label .num{display:inline-block;padding:2px 7px;border-radius:50px;background:#111;color:#fff;font-size:9px;margin-right:6px;vertical-align:middle}
+  .frame-wrap{
+    width:331px;height:720px;position:relative;overflow:hidden;
+  }
+  .frame-inner{
+    width:402px;height:874px;transform:scale(0.823);transform-origin:top left;
+  }
+
+  /* hide animations etc — re-enable static pulse-like classes by no-op-ing */
+  .pulse-dot,.spin,.float,.float-slow,.twinkle,.fadein,.pop,.slide-r,.slide-l{
+    opacity:1 !important;transform:none !important;
+  }
+
+  @page{ size:A4 landscape; margin:0.5cm; }
+
+  /* screen-mode preview gets a soft page background so we can verify */
+  @media screen{
+    body{background:#eef0f5;padding:20px 0}
+    .page{margin:0 auto 24px;max-width:1200px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  }
+
+  .ksuit{font-family:"SUIT","Pretendard",system-ui,sans-serif}
+  .scrolly{overflow:hidden}
+  .nodrag{user-select:none;-webkit-user-drag:none}
+  .sparkle::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(255,255,255,.7) 0 1.2px, transparent 1.6px),
+      radial-gradient(circle at 78% 18%, rgba(255,255,255,.5) 0 .9px, transparent 1.3px),
+      radial-gradient(circle at 30% 80%, rgba(255,255,255,.5) 0 1px, transparent 1.4px),
+      radial-gradient(circle at 86% 70%, rgba(255,255,255,.6) 0 .8px, transparent 1.2px),
+      radial-gradient(circle at 60% 40%, rgba(255,255,255,.45) 0 .8px, transparent 1.2px);
+  }
+  .press{}
+  .ticker{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div id="pages"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="screens-a.jsx"></script>
+<script type="text/babel" src="screens-b.jsx"></script>
+<script type="text/babel" src="screens-main.jsx"></script>
+<script type="text/babel" src="screens-salary.jsx"></script>
+
+<script type="text/babel">
+const PRINT_ROUTES = [
+  ['intro',          '01 인트로'],
+  ['industry',       '02 업종 선택'],
+  ['salary',         '03 월급 입력'],
+  ['q_income',       '04 Q1 수입'],
+  ['q_consume',      '05 Q2 소비'],
+  ['q_risk',         '06 Q3 안정/수익'],
+  ['q_stress',       '07 Q4 불안'],
+  ['q_control',      '08 Q5 통제'],
+  ['q_payment',      '09 Q6 지급방식'],
+  ['result',         '10 결과 카드'],
+  ['connect_loading','11a 계좌 연결 로딩'],
+  ['connect',        '11b 계좌 연결 완료'],
+  ['expense',        '12 고정비 확인'],
+  ['salary_setup',   '13 월급 설정'],
+  ['account_map',    '14·15 계좌 매핑'],
+  ['ai_result',      '16 AI 분석 결과'],
+  ['piggy',          '17 저금통 설정'],
+  ['done',           '18 온보딩 완료'],
+  ['main',           '▶ 홈'],
+  ['book',           '▶ 가계부'],
+  ['report',         '▶ 월간 리포트'],
+  ['salary_main',    '▶ 월급 메인'],
+  ['salary_setting', '▶ 월급 설정'],
+  ['salary_now',     '▶ 월급 지금 받기'],
+  ['salary_lack',    '▶ 잔액 부족'],
+];
+
+function PrintScreen({route}) {
+  const noop = () => {};
+  const ck = 'balanced';
+  const fullTraits = ['income_steady','consume_save','risk_avoid','stress_calm','control_plan','pay_steady'];
+  if (route === 'intro')           return <IntroScreen onNext={noop}/>;
+  if (route === 'industry')        return <IndustryScreen value="food" setValue={noop} onNext={noop} onBack={noop}/>;
+  if (route === 'salary')          return <SalaryScreen value={{amount:'2,800,000', ratio:'fixed'}} setValue={noop} onNext={noop} onBack={noop}/>;
+  if (route.startsWith('q_')) {
+    const qid = route.slice(2);
+    const q = window.QUESTIONS.find(x => x.id === qid);
+    const idx = window.QUESTIONS.findIndex(x => x.id === qid);
+    const traits = fullTraits.slice(0, idx);
+    return <QuestionScreen q={q} value={null} traits={traits} onAnswer={noop} onBack={noop}/>;
+  }
+  if (route === 'result')          return <ResultScreen characterKey={ck} onNext={noop} onBack={noop}/>;
+  if (route === 'connect_loading') return <ConnectLoadingScreen characterKey={ck} onDone={noop}/>;
+  if (route === 'connect')         return <ConnectScreen onNext={noop} onBack={noop}/>;
+  if (route === 'expense')         return <ExpenseScreen onNext={noop} onBack={noop}/>;
+  if (route === 'salary_setup')    return <SalarySetupScreen characterKey={ck} onNext={noop} onBack={noop}/>;
+  if (route === 'account_map')     return <AccountMapScreen onNext={noop} onBack={noop}/>;
+  if (route === 'ai_result')       return <AIResultScreen characterKey={ck} onNext={noop} onBack={noop}/>;
+  if (route === 'piggy')           return <PiggyScreen onFinish={noop} onBack={noop}/>;
+  if (route === 'done')            return <DoneScreen characterKey={ck} onStart={noop}/>;
+  if (route === 'main')            return <MainScreen onNav={noop} characterKey={ck}/>;
+  if (route === 'book')            return <BookScreen onNav={noop} onOpenReport={noop} onOpenFilter={noop}/>;
+  if (route === 'report')          return <ReportScreen onBack={noop} characterKey={ck}/>;
+  if (route === 'salary_main')     return <SalaryMainScreen onNav={noop} onOpenSetting={noop} onOpenNow={noop}/>;
+  if (route === 'salary_setting')  return <SalarySettingScreen onBack={noop} onSaved={noop}/>;
+  if (route === 'salary_now')      return <SalaryNowScreen onBack={noop} lack={false} onPaid={noop} onFail={noop}/>;
+  if (route === 'salary_lack')     return <SalaryNowScreen onBack={noop} lack={true} onPaid={noop} onFail={noop}/>;
+  return null;
+}
+
+const APP_ROUTES = ['main','book','salary_main'];
+
+function PhoneCard({route, label, idx}) {
+  const showNav = APP_ROUTES.includes(route);
+  const current = route==='main'?'home':route==='salary_main'?'salary':route;
+  return (
+    <div className="cell">
+      <div className="frame-wrap">
+        <div className="frame-inner">
+          <IOSDevice width={402} height={874}>
+            <div style={{position:'relative',width:'100%',height:'100%',overflow:'hidden',background:'#fff'}}>
+              <PrintScreen route={route}/>
+              {showNav && window.BottomNav && <BottomNav current={current} onNav={()=>{}}/>}
+            </div>
+          </IOSDevice>
+        </div>
+      </div>
+      <div className="label"><span className="num">{String(idx+1).padStart(2,'0')}</span>{label}</div>
+    </div>
+  );
+}
+
+function PrintApp() {
+  // 2 phones per page (landscape A4)
+  const pages = [];
+  for (let i = 0; i < PRINT_ROUTES.length; i += 2) {
+    pages.push(PRINT_ROUTES.slice(i, i+2));
+  }
+  return (
+    <>
+      {pages.map((pair, pi) => (
+        <div className="page" key={pi}>
+          {pair.map(([r,l], j) => (
+            <PhoneCard key={r} route={r} label={l} idx={pi*2+j}/>
+          ))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+// Wait for all screen modules to register on window before mounting.
+function waitReady() {
+  return new Promise(res => {
+    const needed = ['IOSDevice','IntroScreen','ResultScreen','MainScreen','SalaryMainScreen','QUESTIONS'];
+    const check = () => {
+      if (needed.every(k => window[k] !== undefined)) res();
+      else setTimeout(check, 50);
+    };
+    check();
+  });
+}
+
+(async () => {
+  await waitReady();
+  ReactDOM.createRoot(document.getElementById('pages')).render(<PrintApp/>);
+  // Wait for fonts + render to settle, then print.
+  if (document.fonts && document.fonts.ready) {
+    try { await document.fonts.ready; } catch(e) {}
+  }
+  await new Promise(r => setTimeout(r, 900));
+  window.print();
+})();
+</script>
+</body>
+</html>

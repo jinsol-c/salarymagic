@@ -6,21 +6,21 @@ const CHARACTERS = {
   safe: {
     id:'safe', name:'금고 수호자',
     tagline:'불필요한 흔들림 없이,\n자산을 단단하게 지켜가는 타입이에요.',
-    img:'assets/img18_safetyguard.png',
+    img:'assets/img-38064fd39c25.png',
     chips:[['🪙','저축 중심'],['🍎','리스크 회피'],['📊','지출 통제'],['💵','현금 흐름 유지'],['📈','장기 안정 추구']],
     salary:280, ratio:{salary:55, save:25, buf:20}, monthly:'2,800,000',
   },
   balanced: {
     id:'balanced', name:'흐름 조율자',
     tagline:'상황에 맞게 흐름을 읽고, 수입과 지출을\n균형 있게 움직이는 타입이에요.',
-    img:'assets/img19_flowcontroller.png',
+    img:'assets/img-720033c5005e.png',
     chips:[['📊','분산 관리'],['🎯','리스크 조절'],['🛒','유연한 소비'],['💡','상황 대응'],['📈','균형 성장 추구']],
     salary:300, ratio:{salary:55, save:25, buf:20}, monthly:'3,000,000',
   },
   aggressive: {
     id:'aggressive', name:'수익 증폭자',
     tagline:'기회를 놓치지 않고,\n수익을 빠르게 키워나가는 타입이에요.',
-    img:'assets/img20_revenuemaximizer.png',
+    img:'assets/img-f569cf785b04.png',
     chips:[['🚀','투자 집중'],['🎲','변동성 수용'],['💸','소비 적극성'],['⚡','빠른 의사결정'],['📈','고속 성장 추구']],
     salary:320, ratio:{salary:45, save:20, buf:35}, monthly:'3,200,000',
   },
@@ -188,14 +188,28 @@ function ConnectLoadingScreen({ onDone, characterKey }) {
 // 11b — Connect complete (confetti)
 // ─────────────────────────────────────────────────────────
 function ConnectScreen({ onNext, onBack }) {
+  // confetti shapes — pastel ovals
+  const blobs = [
+    {c:'#A5C9F2', x:'18%', y:'10%', w:60, h:18, r:30},
+    {c:'#FBB7B0', x:'42%', y:'8%',  w:58, h:18, r:30},
+    {c:'#F8E174', x:'66%', y:'13%', w:56, h:18, r:30},
+    {c:'#C8B6F2', x:'76%', y:'24%', w:60, h:20, r:30},
+    {c:'#FBC0E2', x:'82%', y:'36%', w:48, h:14, r:30},
+    {c:'#B0F2D4', x:'12%', y:'30%', w:54, h:16, r:30},
+    {c:'#9DC4F8', x:'8%',  y:'46%', w:60, h:20, r:30},
+    {c:'#D9CDF5', x:'26%', y:'24%', w:50, h:16, r:30},
+  ];
   return (
     <div style={{position:'relative', width:'100%', height:'100%', background:'#fff', display:'flex', flexDirection:'column'}}>
       <div style={{height:T.safeTop}}/>
-      {/* confetti illustration (replaces hand-drawn blobs) */}
-      <div style={{position:'relative', height:260, display:'flex', alignItems:'center', justifyContent:'center'}}>
-        <img src="assets/img23_dataconnected.png" className="nodrag float" style={{
-          maxHeight:260, maxWidth:'90%', objectFit:'contain',
-        }}/>
+      {/* confetti */}
+      <div style={{position:'relative', height:240}}>
+        {blobs.map((b,i) => (
+          <div key={i} style={{
+            position:'absolute', left:b.x, top:b.y, width:b.w, height:b.h,
+            background:b.c, borderRadius:b.r, transform:`rotate(${(i*47)%80 - 40}deg)`,
+          }}/>
+        ))}
       </div>
 
       <div style={{padding:'10px 24px 0', textAlign:'center'}}>
@@ -472,8 +486,8 @@ function AIResultScreen({ onNext, onBack, characterKey }) {
           안정적인 고정비 구조지만,<br/><span style={{color:T.ink}}>비상금 확보가 시급해요</span>
         </div>
 
-        <div className="float" style={{marginTop:18, height:187, display:'flex', justifyContent:'center'}}>
-          <img src={ch.img} className="nodrag" style={{height:187, objectFit:'contain', filter:'drop-shadow(0 8px 14px rgba(95,121,255,.15))'}}/>
+        <div className="float" style={{marginTop:18, height:170, display:'flex', justifyContent:'center'}}>
+          <img src={ch.img} className="nodrag" style={{height:170, objectFit:'contain', filter:'drop-shadow(0 8px 14px rgba(95,121,255,.15))'}}/>
         </div>
         <div style={{marginTop:6, textAlign:'center', fontWeight:800, fontSize:18, color:T.ink, letterSpacing:'-.04em'}}>{ch.name}</div>
         <div style={{marginTop:6, textAlign:'center', fontSize:12, color:T.muted, letterSpacing:'-.04em', whiteSpace:'pre-line', lineHeight:1.55}}>{ch.tagline}</div>
@@ -503,35 +517,20 @@ function AIResultScreen({ onNext, onBack, characterKey }) {
             수익 변동에 대비해 고정비의 1.3배 수준인 약 490만원을 비상금으로 준비해두세요.
           </div>
 
-          {/* donut + outside legend */}
-          <div style={{marginTop:18, display:'flex', justifyContent:'center'}}>
-            <div style={{position:'relative', width:170, height:170}}>
-              <div style={{
-                width:170, height:170, borderRadius:'50%',
-                background:`conic-gradient(${T.brand} 0 64.6%, ${T.teal} 64.6% 79.8%, ${T.chipDark} 79.8% 89.6%, #BFB94A 89.6% 97.4%, ${T.muted2} 97.4% 100%)`,
-              }}/>
-              <div style={{position:'absolute', inset:30, borderRadius:'50%', background:'#fff'}}/>
-            </div>
-          </div>
-          <div style={{
-            marginTop:14,
-            display:'grid', gridTemplateColumns:'1fr 1fr', columnGap:14, rowGap:6,
-            padding:'0 6px',
-          }}>
-            {[
-              {c:T.brand,    label:'임대료',   pct:'64.6%'},
-              {c:T.teal,     label:'인건비',   pct:'15.2%'},
-              {c:T.chipDark, label:'대출이자', pct:'9.8%'},
-              {c:'#BFB94A',  label:'고정비',   pct:'7.8%'},
-              {c:T.muted2,   label:'관리비',   pct:'8%'},
-              {c:'#C7C7CB',  label:'기타',     pct:'3%'},
-            ].map(it => (
-              <div key={it.label} style={{display:'flex', alignItems:'center', gap:8, fontSize:11, color:T.muted, fontWeight:600, letterSpacing:'-.03em'}}>
-                <span style={{width:8, height:8, borderRadius:'50%', background:it.c, flex:'0 0 auto'}}/>
-                <span style={{flex:1, color:T.muted}}>{it.label}</span>
-                <span style={{color:T.muted, fontVariantNumeric:'tabular-nums'}}>{it.pct}</span>
-              </div>
-            ))}
+          {/* donut */}
+          <div style={{marginTop:18, position:'relative', width:200, height:200, marginLeft:'auto', marginRight:'auto'}}>
+            <div style={{
+              width:200, height:200, borderRadius:'50%',
+              background:`conic-gradient(${T.brand} 0 64.6%, ${T.teal} 64.6% 79.8%, ${T.chipDark} 79.8% 89.6%, #BFB94A 89.6% 97.4%, ${T.muted2} 97.4% 100%)`,
+            }}/>
+            <div style={{position:'absolute', inset:34, borderRadius:'50%', background:'#fff'}}/>
+            {/* labels */}
+            <div style={{position:'absolute', right:-6, top:60, fontSize:10, color:T.brand, fontWeight:700}}>임대료 64.6%</div>
+            <div style={{position:'absolute', left:-2, top:80, fontSize:10, color:T.teal, fontWeight:700}}>인건비 15.2%</div>
+            <div style={{position:'absolute', left:6,  top:46, fontSize:10, color:T.chipDark, fontWeight:700}}>대출이자 9.8%</div>
+            <div style={{position:'absolute', left:30, top:20, fontSize:10, color:'#A09824', fontWeight:700}}>고정비 7.8%</div>
+            <div style={{position:'absolute', right:34, top:6, fontSize:10, color:T.muted, fontWeight:700}}>관리비 8%</div>
+            <div style={{position:'absolute', right:24, top:30, fontSize:10, color:T.muted, fontWeight:700}}>기타 3%</div>
           </div>
           <div style={{marginTop:6, textAlign:'center', fontSize:11, color:T.muted2, letterSpacing:'-.04em'}}>
             사장님의 소비 성향과 리스크 성향을 기반으로 자동 설정되었어요
@@ -565,11 +564,7 @@ function AIResultScreen({ onNext, onBack, characterKey }) {
 // ─────────────────────────────────────────────────────────
 function PiggyScreen({ onFinish, onBack }) {
   const [period, setPeriod] = useStateB('6개월');
-  const [periodOpen, setPeriodOpen] = useStateB(false);
-  const [customMode, setCustomMode] = useStateB(false);
-  const [customVal, setCustomVal] = useStateB('');
   const [target, setTarget] = useStateB('');
-  const periodOptions = ['1개월', '3개월', '6개월', '직접 설정'];
   function bump(n) {
     const cur = Number(String(target).replace(/[^0-9]/g,'')) || 0;
     setTarget((cur + n*10000).toLocaleString('en-US'));
@@ -586,7 +581,7 @@ function PiggyScreen({ onFinish, onBack }) {
       </div>
 
       <div className="float" style={{display:'flex', justifyContent:'center', marginTop:14, height:160}}>
-        <img src="assets/img24_piggy.png" className="nodrag" style={{height:160, objectFit:'contain', filter:'drop-shadow(0 8px 14px rgba(95,121,255,.18))'}}/>
+        <img src="assets/img-7e26313f8a05.png" className="nodrag" style={{height:160, objectFit:'contain'}}/>
       </div>
 
       <div style={{padding:'10px 24px 0', textAlign:'center', fontSize:13, color:T.muted, letterSpacing:'-.04em', lineHeight:1.55}}>
@@ -600,81 +595,10 @@ function PiggyScreen({ onFinish, onBack }) {
             <div style={{display:'flex', alignItems:'center', gap:8, fontWeight:700, fontSize:13, color:T.ink, letterSpacing:'-.04em'}}>
               <span style={{fontSize:14}}>📅</span> 목표 기준 설정
             </div>
-            <div style={{position:'relative'}}>
-              <button
-                className="press"
-                onClick={() => setPeriodOpen(o => !o)}
-                style={{
-                  padding:'5px 11px', borderRadius:9999, border:`1px solid ${periodOpen ? T.brand : T.line2}`,
-                  fontSize:11, fontWeight:600, color:T.ink2, letterSpacing:'-.04em',
-                  display:'flex', alignItems:'center', gap:6, background:'#fff',
-                  minWidth:88,
-                }}
-              >
-                <span style={{flex:1, textAlign:'left'}}>{customMode && customVal ? `${customVal}개월` : period}</span>
-                <span style={{fontSize:9, transform: periodOpen ? 'rotate(180deg)' : 'none', transition:'transform .15s ease'}}>▼</span>
-              </button>
-              {periodOpen && (
-                <>
-                  <div onClick={() => setPeriodOpen(false)} style={{position:'fixed', inset:0, zIndex:5}}/>
-                  <div className="pop" style={{
-                    position:'absolute', top:36, right:0, zIndex:6,
-                    minWidth:128, background:'#fff',
-                    borderRadius:10, border:`1px solid ${T.line}`,
-                    boxShadow:'0 8px 22px rgba(0,0,0,.12)',
-                    overflow:'hidden',
-                  }}>
-                    {periodOptions.map((opt, i) => {
-                      const active = (opt === '직접 설정') ? customMode : (!customMode && period === opt);
-                      return (
-                        <button
-                          key={opt}
-                          onClick={() => {
-                            if (opt === '직접 설정') {
-                              setCustomMode(true);
-                              setPeriod('직접 설정');
-                            } else {
-                              setCustomMode(false);
-                              setCustomVal('');
-                              setPeriod(opt);
-                            }
-                            setPeriodOpen(false);
-                          }}
-                          style={{
-                            width:'100%', padding:'10px 14px', textAlign:'left',
-                            background: active ? T.surface1 : '#fff',
-                            color: active ? T.brand : T.ink2,
-                            fontWeight: active ? 700 : 600, fontSize:12, letterSpacing:'-.04em',
-                            borderBottom: i < periodOptions.length-1 ? `1px solid ${T.line}` : 0,
-                            display:'flex', alignItems:'center', justifyContent:'space-between',
-                          }}
-                        >
-                          {opt}
-                          {active && <span style={{fontSize:11}}>✓</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
+            <div style={{padding:'5px 11px', borderRadius:9999, border:`1px solid ${T.line2}`, fontSize:11, fontWeight:600, color:T.ink2, letterSpacing:'-.04em', display:'flex', alignItems:'center', gap:4}}>
+              {period} <span style={{fontSize:9}}>▼</span>
             </div>
           </div>
-          {customMode && (
-            <div className="fadein" style={{
-              marginTop:10, height:42, borderRadius:10, border:`1px solid ${T.line}`,
-              display:'flex', alignItems:'center', padding:'0 14px', gap:6,
-            }}>
-              <input
-                value={customVal}
-                onChange={e => setCustomVal(e.target.value.replace(/[^0-9]/g,''))}
-                placeholder="개월 직접 입력"
-                inputMode="numeric"
-                style={{flex:1, border:0, outline:0, background:'transparent',
-                  fontFamily:'inherit', fontSize:13, fontWeight:600, letterSpacing:'-.04em', color:T.ink}}
-              />
-              {customVal && <span style={{fontSize:12, color:T.muted, fontWeight:600}}>개월</span>}
-            </div>
-          )}
           <div style={{marginTop:14, display:'flex', alignItems:'center', justifyContent:'space-between'}}>
             <div style={{display:'flex', alignItems:'center', gap:8, fontWeight:700, fontSize:13, color:T.ink, letterSpacing:'-.04em'}}>
               <span style={{fontSize:14}}>💼</span> 월 고정비
@@ -742,7 +666,7 @@ function PiggyScreen({ onFinish, onBack }) {
 // ─────────────────────────────────────────────────────────
 // Done splash
 // ─────────────────────────────────────────────────────────
-function DoneScreen({ onStart, characterKey }) {
+function DoneScreen({ onRestart, characterKey }) {
   const ch = CHARACTERS[characterKey];
   return (
     <div style={{position:'relative', width:'100%', height:'100%', background:T.brand, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', overflow:'hidden'}}>
@@ -760,11 +684,10 @@ function DoneScreen({ onStart, characterKey }) {
       <div style={{marginTop:8, color:'rgba(255,255,255,.85)', fontSize:14, fontWeight:500, letterSpacing:'-.04em', textAlign:'center', padding:'0 40px', lineHeight:1.55}}>
         {ch.name} 사장님,<br/>이제 매달 적정 월급을 챙겨드릴게요
       </div>
-      <button onClick={onStart} className="press" style={{
-        marginTop:36, padding:'14px 32px', borderRadius:50, background:'#fff', color:T.brand,
-        fontWeight:800, fontSize:15, letterSpacing:'-.04em',
-        boxShadow:'0 8px 22px rgba(0,0,0,.18)',
-      }}>월급술사 시작하기</button>
+      <button onClick={onRestart} className="press" style={{
+        marginTop:36, padding:'14px 30px', borderRadius:50, background:'#fff', color:T.brand,
+        fontWeight:700, fontSize:14, letterSpacing:'-.04em',
+      }}>처음부터 다시 보기</button>
     </div>
   );
 }

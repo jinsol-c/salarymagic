@@ -154,15 +154,21 @@ function IntroScreen({ onNext }) {
         {/* speech bubble */}
         <Bubble>1분이면 끝나요</Bubble>
 
-        {/* hero character (no gray circle) — 154 x 185 with float micro-action */}
-        <div style={{position:'relative', marginTop:46, width:230, height:230, display:'flex', alignItems:'center', justifyContent:'center'}}>
+        {/* hero gray circle + character peeking out bottom-right */}
+        <div style={{position:'relative', marginTop:32, width:230, height:230}}>
+          <div className="float-slow" style={{
+            position:'absolute', inset:0, borderRadius:'50%',
+            background:T.circle,
+          }}/>
           {/* twinkles */}
-          <div className="twinkle" style={{position:'absolute', right:30, top:34, fontSize:14, color:'#9F8DFF'}}>✦</div>
-          <div className="twinkle" style={{position:'absolute', left:34, top:60, fontSize:10, color:'#9F8DFF', animationDelay:'.5s'}}>✦</div>
-          <div className="twinkle" style={{position:'absolute', right:46, bottom:30, fontSize:11, color:'#9F8DFF', animationDelay:'1s'}}>✦</div>
+          <div className="twinkle" style={{position:'absolute', right:24, top:46, fontSize:14, color:'#9F8DFF'}}>✦</div>
+          <div className="twinkle" style={{position:'absolute', right:50, top:78, fontSize:10, color:'#9F8DFF', animationDelay:'.5s'}}>✦</div>
+          {/* character — placed to peek out bottom-right */}
           <img src="assets/img-7e26313f8a05.png" className="nodrag float" style={{
-            width:154, height:185, objectFit:'contain',
-            filter:'drop-shadow(0 8px 14px rgba(0,0,0,.14))',
+            position:'absolute',
+            right:-22, bottom:-14,
+            width:140, height:'auto',
+            filter:'drop-shadow(0 6px 12px rgba(0,0,0,.12))',
           }}/>
         </div>
 
@@ -232,8 +238,7 @@ function IndustryScreen({ value, setValue, onNext, onBack }) {
                 background: active ? T.brand : T.surface2,
                 border: active ? `2px solid ${T.brand}` : '2px solid transparent',
                 color: active ? '#fff' : T.ink2,
-                fontFamily:'"SUIT","Pretendard",system-ui,sans-serif',
-                fontWeight:800, fontSize:17, letterSpacing:'-.04em',
+                fontWeight:700, fontSize:15, letterSpacing:'-.04em',
                 display:'flex', alignItems:'center', justifyContent:'center',
                 transition:'all .18s ease',
                 boxShadow: active ? '0 8px 20px rgba(95,121,255,.28)' : 'none',
@@ -384,17 +389,17 @@ const QUESTIONS = [
   { id:'stress', step:4, title:'돈 때문에 불안했던 적이 있나요?',
     options: [
       {k:'high', label:'자주 있어요', img:'assets/img-45a69417262f.png', tagOn:'stress_high'},
-      {k:'low', label:'거의 없어요', img:'assets/img14_q4_anxiety.png', tagOn:'stress_low'},
+      {k:'low', label:'거의 없어요', img:'assets/char-5.png', tagOn:'stress_low'},
     ]},
   { id:'control', step:5, title:'내 지출은 내가 잘 통제하고 있나요?',
     options: [
       {k:'low', label:'잘 못해요', img:'assets/img-f173d64a7512.png', tagOn:'control_low'},
-      {k:'high', label:'완벽하게 해요', img:'assets/img15_q5_control.png', tagOn:'control_high'},
+      {k:'high', label:'완벽하게 해요', img:'assets/char-4.png', tagOn:'control_high'},
     ]},
   { id:'payment', step:6, title:`사업 소득도 '월급처럼' 매달 일정한 금액을 받는 것, 어떻게 생각하세요?`,
     options: [
-      {k:'steady', label:'안정돼서 좋다', img:'assets/img16_q6_stable.png', tagOn:'pay_steady'},
-      {k:'perf', label:'상황에 맞게\n유연한 게 좋아요', img:'assets/img17_q6_flexible.png', tagOn:'pay_perf'},
+      {k:'steady', label:'안정돼서 좋다', img:'assets/char-1.png', tagOn:'pay_steady'},
+      {k:'perf', label:'상황에 맞게\n유연한 게 좋아요', img:'assets/char-2.png', tagOn:'pay_perf'},
     ]},
 ];
 
@@ -415,12 +420,12 @@ function QuestionScreen({ q, value, onAnswer, onBack, traits }) {
         <TraitChips traits={traits}/>
       </div>
 
-      {/* big blue card with subtle side peek — fixed 385px height */}
+      {/* big blue card with subtle side peek */}
       <div className="slide-r" key={q.id} style={{
         margin:'18px 16px 22px',
         padding:'26px 22px 22px',
         background:T.brand, borderRadius:18, color:'#fff',
-        height:385,
+        flex:1,
         display:'flex', flexDirection:'column',
         position:'relative', overflow:'hidden',
         boxShadow:'0 12px 28px rgba(95,121,255,.22)',

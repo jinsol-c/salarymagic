@@ -35,7 +35,6 @@ const ROUTES = [
   'expense','salary_setup','account_map',
   'ai_result','piggy','done',
 ];
-const APP_ROUTES = ['main','book','report','salary_main','salary_setting','salary_now','salary_lack','salary_history','bank','recipe','recipe_loan','recipe_invest','recipe_insurance','recipe_card','mypage'];
 
 const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
   "characterOverride": "auto",
@@ -59,18 +58,11 @@ function App() {
   }, []);
   const [route, setRoute] = useAppState('intro');
   const [history, setHistory] = useAppState([]);
-  const [sheet, setSheet] = useAppState(null); // 'filter' | 'period' | null
   const [industry, setIndustry] = useAppState(null);
   const [salary, setSalary] = useAppState(null);
   const [answers, setAnswers] = useAppState({});
   const [traits, setTraits] = useAppState([]);
   const [showError, setShowError] = useAppState(false);
-  const [paidModal, setPaidModal] = useAppState(null); // 'ok' | 'fail' | null
-  const [pricingOpen, setPricingOpen] = useAppState(false);
-  const [tradeListOpen, setTradeListOpen] = useAppState(false);
-  const [boxSettingTab, setBoxSettingTab] = useAppState(null); // null | 'emergency' | 'tax'
-  const [menuOpen, setMenuOpen] = useAppState(false);
-  const [reportTab, setReportTab] = useAppState('ai'); // 'ai' | 'week' | 'month' | 'year'
   const [tweaks, setTweak] = window.useTweaks ? window.useTweaks(TWEAK_DEFAULS) : [TWEAK_DEFAULS, ()=>{}];
 
   const computedKey = computeCharacter(answers);
@@ -82,16 +74,8 @@ function App() {
     setHistory(h => {
       const prev = h[h.length-1];
       if (prev) { setRoute(prev); return h.slice(0,-1); }
-      // fallback: from any sub-screen, return to main
-      setRoute('main');
-      return [];
+      return h;
     });
-  }
-  function navTab(k) {
-    const target = k==='home' ? 'main' : k==='salary' ? 'salary_main' : k==='piggy' ? 'bank' : k;
-    if (target === route) return;
-    setHistory(h => [...h, route]);
-    setRoute(target);
   }
   function reset() { setRoute('intro'); setHistory([]); setIndustry(null); setSalary(null); setAnswers({}); setTraits([]); }
 
@@ -139,95 +123,19 @@ function App() {
   } else if (route === 'piggy') {
     screen = <PiggyScreen onFinish={()=>go('done')} onBack={back}/>;
   } else if (route === 'done') {
-    screen = <DoneScreen characterKey={characterKey} onStart={()=>{ setHistory(h=>[...h,'done']); setRoute('main'); }}/>;
-  } else if (route === 'main') {
-    screen = <MainScreen onNav={r => { setHistory(h=>[...h,'main']); setRoute(r==='home'?'main':r); }} characterKey={characterKey} onOpenWeekReport={()=>{ setHistory(['main','book']); setReportTab('week'); setRoute('report'); }} onOpenRecipe={()=>{ setHistory(h=>[...h,'main']); setRoute('recipe'); }} onOpenMyPage={()=>{ setHistory(h=>[...h,'main']); setRoute('mypage'); }}/>;
-  } else if (route === 'mypage') {
-    screen = <MyPageScreen onBack={back}/>;
-  } else if (route === 'book') {
-    screen = <BookScreen
-      onNav={r => { setHistory(h=>[...h,'book']); setRoute(r==='home'?'main':r); }}
-      onOpenReport={()=>{ setHistory(h=>[...h,'book']); setReportTab('ai'); setRoute('report'); }}
-      onOpenFilter={()=>setSheet('filter')}
-      onOpenRecipe={()=>{ setHistory(h=>[...h,'book']); setRoute('recipe'); }}
-      onOpenMenu={()=>setMenuOpen(true)}
-    />;
-  } else if (route === 'report') {
-    screen = <ReportScreen onBack={back} characterKey={characterKey} initialTab={reportTab} onTabChange={setReportTab}
-      onOpenPricing={()=>setPricingOpen(true)}
-      onOpenRecipe={()=>{ setHistory(h=>[...h,'report']); setRoute('recipe'); }}
-    />;
-  } else if (route === 'bank') {
-    screen = <BankScreen
-      onBack={back}
-      onOpenTradeList={()=>setTradeListOpen(true)}
-      onOpenEmergencySetting={()=>setBoxSettingTab('emergency')}
-      onOpenTaxSetting={()=>setBoxSettingTab('tax')}
-      onOpenPricing={()=>setPricingOpen(true)}
-      onOpenRecipe={()=>{ setHistory(h=>[...h,'bank']); setRoute('recipe'); }}
-      onOpenMenu={()=>setMenuOpen(true)}
-    />;
-  } else if (route === 'recipe') {
-    screen = <MoneyRecipeScreen onBack={back} onOpenPricing={()=>setPricingOpen(true)}
-      onOpenLoan={()=>{ setHistory(h=>[...h,'recipe']); setRoute('recipe_loan'); }}
-      onOpenInvest={()=>{ setHistory(h=>[...h,'recipe']); setRoute('recipe_invest'); }}
-      onOpenInsurance={()=>{ setHistory(h=>[...h,'recipe']); setRoute('recipe_insurance'); }}
-      onOpenCard={()=>{ setHistory(h=>[...h,'recipe']); setRoute('recipe_card'); }}
-      onOpenBank={()=>{ setHistory(h=>[...h,'recipe']); setRoute('bank'); }}
-    />;
-  } else if (route === 'recipe_loan') {
-    screen = <LoanScreen onBack={back}/>;
-  } else if (route === 'recipe_invest') {
-    screen = <InvestScreen onBack={back}/>;
-  } else if (route === 'recipe_insurance') {
-    screen = <InsuranceScreen onBack={back}/>;
-  } else if (route === 'recipe_card') {
-    screen = <CardScreen onBack={back}/>;
-  } else if (route === 'salary_main') {
-    screen = <SalaryMainScreen
-      onNav={r => { setHistory(h=>[...h,'salary_main']); setRoute(r==='home'?'main':r); }}
-      onOpenSetting={()=>{ setHistory(h=>[...h,'salary_main']); setRoute('salary_setting'); }}
-      onOpenNow={()=>{ setHistory(h=>[...h,'salary_main']); setRoute('salary_now'); }}
-      onOpenPricing={()=>setPricingOpen(true)}
-      onOpenMenu={()=>setMenuOpen(true)}
-      onOpenHistory={()=>{ setHistory(h=>[...h,'salary_main']); setRoute('salary_history'); }}
-    />;
-  } else if (route === 'salary_history') {
-    screen = <SalaryHistoryScreen onBack={back}/>;
-  } else if (route === 'salary_setting') {
-    screen = <SalarySettingScreen onBack={back} onSaved={()=>{ setHistory(h=>[...h,'salary_setting']); setRoute('salary_main'); }}/>;
-  } else if (route === 'salary_now') {
-    screen = <SalaryNowScreen onBack={back} lack={false} onPaid={()=>setPaidModal('ok')} onFail={()=>setPaidModal('fail')}/>;
-  } else if (route === 'salary_lack') {
-    screen = <SalaryNowScreen onBack={back} lack={true} onPaid={()=>setPaidModal('ok')} onFail={()=>setPaidModal('fail')}/>;
+    screen = <DoneScreen characterKey={characterKey} onRestart={reset}/>;
   }
-
-  const isAppRoute = APP_ROUTES.includes(route);
 
   // route index for jump nav
   const idx = ROUTES.indexOf(route);
-  const stepLabel = idx >= 0 ? `${idx+1} / ${ROUTES.length}` : route;
+  const stepLabel = `${idx+1} / ${ROUTES.length}`;
 
   return (
     <Stage>
       <IOSDevice width={402} height={874}>
         <div style={{position:'relative',width:'100%',height:'100%',overflow:'hidden',background:'#fff'}}>
           {screen}
-          {isAppRoute && route !== 'report' && route !== 'salary_setting' && route !== 'salary_now' && route !== 'salary_lack' && route !== 'salary_history' && route !== 'recipe' && route !== 'recipe_loan' && route !== 'recipe_invest' && route !== 'recipe_insurance' && route !== 'recipe_card' && route !== 'mypage' && window.BottomNav && (
-            <BottomNav current={route==='main'?'home':route==='salary_main'?'salary':route==='bank'?'piggy':route} onNav={navTab}/>
-          )}
-          {sheet === 'filter' && window.FilterSheet && (
-            <FilterSheet onClose={()=>setSheet(null)} onOpenPeriod={()=>setSheet('period')}/>
-          )}
-          {sheet === 'period' && window.PeriodSheet && (
-            <PeriodSheet onClose={()=>setSheet('filter')}/>
-          )}
           {showError && <NetworkErrorModal onRetry={()=>setShowError(false)}/>}
-          {paidModal && window.SalaryPaidModal && <SalaryPaidModal kind={paidModal} onClose={()=>{ setPaidModal(null); if (paidModal==='ok') back(); }}/>}
-          {pricingOpen && window.PricingPopup && <PricingPopup onClose={()=>setPricingOpen(false)}/>}
-          {tradeListOpen && window.BankTradeListPopup && <BankTradeListPopup onClose={()=>setTradeListOpen(false)}/>}
-          {boxSettingTab && window.BankBoxSettingPopup && <BankBoxSettingPopup initialTab={boxSettingTab} onClose={()=>setBoxSettingTab(null)}/>}
-          {menuOpen && window.CategoryDrawer && <CategoryDrawer onClose={()=>setMenuOpen(false)} onNavigate={(k)=>{ setMenuOpen(false); if (k === '_profile') { setHistory(h=>[...h, route]); setRoute('mypage'); return; } if (k.startsWith('_')) return; setHistory(h=>[...h, route]); setRoute(k); }}/>}
           {tweaks.showStepLabel && (
             <div style={{position:'absolute',top:64,right:14,padding:'4px 9px',borderRadius:50,background:'rgba(0,0,0,.55)',color:'#fff',fontSize:10,fontWeight:700,letterSpacing:'.06em',zIndex:30,pointerEvents:'none'}}>{stepLabel}</div>
           )}
@@ -263,21 +171,6 @@ function App() {
               ['ai_result','16 AI'],
               ['piggy','17 저금통'],
               ['done','✓ 완료'],
-              ['main','▶ 홈'],
-              ['book','▶ 장부'],
-              ['report','▶ 리포트'],
-              ['salary_main','▶ 월급'],
-              ['salary_setting','▶ 월급설정'],
-              ['salary_now','▶ 월급 지금받기'],
-              ['salary_lack','▶ 월급 부족'],
-              ['salary_history','▶ 월급 수령 이력'],
-              ['bank','▶ 저금통'],
-              ['recipe','▶ 머니 레시피'],
-              ['recipe_loan','  · 대출'],
-              ['recipe_invest','  · 투자'],
-              ['recipe_insurance','  · 보험'],
-              ['recipe_card','  · 카드'],
-              ['mypage','▶ 마이페이지'],
             ].map(([r,l])=>(
               <button key={r} onClick={()=>{ setRoute(r); setHistory([]); }} style={{
                 padding:'8px 10px',borderRadius:8,

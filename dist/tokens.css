@@ -1,0 +1,61 @@
+/* tokens.css — 월급술사 design tokens (Wanted-inspired) */
+:root{
+  /* brand */
+  --brand:#5F79FF;
+  --brand-soft:#B8C2FF;        /* selected option card on blue Q card */
+  --brand-press:#4A64E8;
+  --teal:#5DD3C9;
+  --teal-deep:#3FB7B0;
+  --lime:#D5E641;              /* highlight chip + slider track */
+
+  /* surface */
+  --bg:#FFFFFF;
+  --surface-1:#F7F7F8;
+  --surface-2:#ECECEE;          /* unselected industry card */
+  --surface-bubble:#EBEBEB;     /* speech bubble */
+  --surface-chip-empty:#E5E5E7; /* empty trait chip skeleton */
+  --surface-circle:#D7D7D7;     /* hero placeholder circle on intro */
+  --surface-card:#FFFFFF;
+  --surface-bank:#FAFAFB;
+
+  /* ink */
+  --ink:#1A1A1A;
+  --ink-2:#3A3A3A;
+  --muted:#7A7A7A;
+  --muted-2:#A0A0A0;
+  --line:#E6E6E8;
+  --line-2:#D8D8DA;
+
+  /* result card chips */
+  --chip-dark:#353535;
+
+  /* radius */
+  --r-sm:8px;
+  --r-md:12px;
+  --r-lg:16px;
+  --r-xl:20px;
+  --r-2xl:28px;
+  --r-pill:9999px;
+
+  /* type — Pretendard/SUIT scale */
+  --t-h1:24px;       /* page title */
+  --t-h2:20px;       /* card title */
+  --t-body:14px;
+  --t-sub:13px;
+  --t-cap:12px;
+  --t-tiny:11px;
+
+  /* button */
+  --btn-h:54px;
+  --btn-r:30px;
+
+  /* shadow */
+  --sh-card:0 6px 18px rgba(20,30,80,.06);
+  --sh-cta:0 10px 22px rgba(95,121,255,.28);
+  --sh-cta-light:0 6px 16px rgba(0,0,0,.08);
+
+  /* layout */
+  --safe-top:60px;             /* clears iOS status bar */
+  --pad-x:24px;
+  --pad-bottom:34px;
+}
