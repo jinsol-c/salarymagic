@@ -112,7 +112,7 @@ function BankScreen({ onBack, onOpenTradeList, onOpenEmergencySetting, onOpenTax
         <div style={{margin:'4px 16px 0', background:'#fff', borderRadius:14, padding:'18px 18px 18px', boxShadow:'0 4px 12px rgba(0,0,0,.04)', position:'relative'}}>
           <div style={{display:'flex', alignItems:'flex-start', justifyContent:'space-between'}}>
             <div style={{fontWeight:800, fontSize:15, color:T.ink, letterSpacing:'-.04em'}}>저금통 현황</div>
-            <button onClick={onOpenTradeList} className="press" style={{width:24, height:24, display:'flex', alignItems:'center', justifyContent:'center'}} aria-label="거래내역"><img src="assets/icon_setting.png" alt="" className="nodrag" style={{width:22, height:22, objectFit:'contain'}}/></button>
+            <button onClick={onOpenEmergencySetting} className="press" style={{width:24, height:24, display:'flex', alignItems:'center', justifyContent:'center'}} aria-label="설정"><img src="assets/icon_setting.png" alt="" className="nodrag" style={{width:22, height:22, objectFit:'contain'}}/></button>
           </div>
           <div style={{marginTop:8, fontWeight:800, fontSize:24, color:T.brand, letterSpacing:'-.045em'}}>1,135,500 원</div>
           {/* mascot — overlaps top-right corner */}
@@ -172,7 +172,7 @@ function BankScreen({ onBack, onOpenTradeList, onOpenEmergencySetting, onOpenTax
           title="비상금 상자"
           amount="1,000,000 원"
           bankLabel="[카카오뱅크] 262555-232222"
-          onMore={onOpenEmergencySetting}
+          onMore={onOpenTradeList}
           safeBox={{
             title:'세이프존 3개월',
             body:'안정 구간 유지 중이에요. 현재 비상금으로 약 3개월간 수입이 없\n어도 고정비를 유지할 수 있어요.',
@@ -205,7 +205,7 @@ function BankScreen({ onBack, onOpenTradeList, onOpenEmergencySetting, onOpenTax
           title="세금 상자"
           amount="1,135,500 원"
           bankLabel="[우리은행] 7777-232222"
-          onMore={onOpenTaxSetting}
+          onMore={onOpenTradeList}
           showMascot
           goalPill="목표 650만원"
           progressPct={52}
